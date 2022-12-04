@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import QRCode from "react-qr-code";
+import QRCodeLink from "qrcode";
+import "./App.css";
 
 function App() {
+  const [link, setLink] = useState("https");
+  const [qrcodeLink, setQrcodeLink] = useState("");
+
+  function hadleGenerate(link_url) {
+    QRCodeLink.toDataURL(
+      link_url,
+      {
+        width: 600,
+        margin: 3,
+      },
+      function (erro, url) {
+        setQrcodeLink(url);
+      }
+    );
+  }
+
+  function hadleQrcode(e) {
+    setLink(e.target.value);
+    hadleGenerate(e.target.value);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
+    <div className="container">
+      <h1>Gerador de QrCode</h1>
+      <div className="qrcode">
+        <QRCode value={link}></QRCode>
+
+        <input
+          className="input"
+          placeholder="Digite seu link..."
+          value={link}
+          onChange={(e) => hadleQrcode(e)}
+        ></input>
+        <a href={qrcodeLink} download={`qrcode.png`}>
+          {" "}
+          Baixar QrCode
         </a>
-      </header>
+      </div>
     </div>
   );
 }
